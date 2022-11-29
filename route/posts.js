@@ -4,11 +4,15 @@ const Posts = require("../schemas/post.js");
 
 // 전체 게시물 조회
 router.get("/posts", async (req, res) => {
-  let posts = await Posts.find({});
+  let posts = await Posts.find(
+    {},
+    { title: true, user: true, content: true, postAt: true }
+  );
 
   posts.reverse((a, b) => b.postAt - a.postAt);
   res.status(200).json(posts);
 });
+// title, user, password, content, postAt
 
 // 게시물 상세 조회
 router.get("/posts/:_postId", async (req, res) => {
