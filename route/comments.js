@@ -2,9 +2,13 @@ const express = require("express");
 const router = express.Router();
 const Comments = require("../schemas/comment.js");
 const Posts = require("../schemas/post.js");
+
 // 전체 댓글 조회
 router.get("/comments", async (req, res) => {
-  let comments = await Comments.find({});
+  let comments = await Comments.find(
+    {},
+    { user: true, content: true, postAt: true }
+  );
   comments.reverse((a, b) => b.postAt - a.postAt);
   res.status(200).json(comments);
 });
@@ -12,7 +16,10 @@ router.get("/comments", async (req, res) => {
 // 특정 게시글에 달린 댓글 조회
 router.get("/comments/:_postId", async (req, res) => {
   const { _postId } = req.params;
-  let comments = await Comments.find({ postId: _postId });
+  let comments = await Comments.find(
+    { postId: _postId },
+    { user: true, content: true, postAt: true }
+  );
   res.status(200).json({ comments });
 });
 

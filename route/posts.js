@@ -18,7 +18,10 @@ router.get("/posts", async (req, res) => {
 router.get("/posts/:_postId", async (req, res) => {
   try {
     const { _postId } = req.params;
-    let post = await Posts.findOne({ _id: _postId });
+    let post = await Posts.findOne(
+      { _id: _postId },
+      { title: true, user: true, content: true, postAt: true }
+    );
     if (post == null)
       res.status(400).json({ message: "게시물 조회에 실패하였습니다." });
     else res.status(200).json({ post: post });
