@@ -8,7 +8,7 @@ connect();
 
 app.use(express.json());
 
-app.use("/api", [Posts, Comments]);
+app.use("/", [Posts, Comments]);
 
 app.listen(port, () => {
   console.log(port, "has been opened");
