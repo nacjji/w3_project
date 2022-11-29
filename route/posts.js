@@ -28,6 +28,10 @@ router.get("/posts/:_postId", async (req, res) => {
 // 게시물 생성
 router.post("/posts", async (req, res) => {
   const { title, user, password, content, postAt } = req.body;
+
+  if (!content || !title || !password || !user || !password) {
+    res.status(400).json({ message: "게시글 내용을 입력해주세요" });
+  }
   const postC = await Posts.create({
     title,
     user,
@@ -46,24 +50,18 @@ router.put("/posts/:_postId", async (req, res) => {
     let post = await Posts.findOne({ _id: _postId });
     //올바른 파라미터
     if (post !== null) {
-      if (!content) {
+      if (!content)
         res.status(400).json({ errMessage: "글 내용을 입력해주세요" });
-      }
       if (password == post.password) {
         await Posts.updateOne(
           { _id: _postId },
           { $set: { title: title, content: content } }
         );
         res.status(200).json({ message: "게시글을 수정하였습니다." });
-      } else {
-        res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
-      }
+      } else res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
       // 올바르지 않은 파라미터
-    } else {
-      res.status(400).json({
-        errMessage: "게시글 조회에 실패하였습니다.",
-      });
-    }
+    } else
+      res.status(400).json({ errMessage: "게시글 조회에 실패하였습니다." });
   } catch (error) {
     res.status(400).json({ error: "데이터 형식이 올바르지 않습니다." });
   }
@@ -74,15 +72,13 @@ router.delete("/posts/:_postId", async (req, res) => {
     const { _postId } = req.params;
     const { password } = req.body;
     const post = await Posts.findOne({ _id: _postId });
-    if (post === null) {
+    if (post === null)
       res.status(400).json({ errMessage: "게시글 조회에 실패하였습니다." });
-    } else {
+    else {
       if (password == post.password) {
         await Posts.deleteOne({ _id: _postId });
         res.json({ result: "게시글을 삭제하였습니다." });
-      } else {
-        res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
-      }
+      } else res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
     }
   } catch (error) {
     res.status(400).json({ error: "데이터 형식이 올바르지 않습니다." });
