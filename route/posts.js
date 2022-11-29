@@ -15,7 +15,6 @@ router.get("/posts/:_postId", async (req, res) => {
   try {
     const { _postId } = req.params;
     let post = await Posts.findOne({ _id: _postId });
-    console.log(post);
     if (post == null) {
       res.status(400).json({ message: "게시물 조회에 실패하였습니다." });
     } else {
@@ -75,7 +74,6 @@ router.delete("/posts/:_postId", async (req, res) => {
     const { _postId } = req.params;
     const { password } = req.body;
     const post = await Posts.findOne({ _id: _postId });
-    console.log(post);
     if (post === null) {
       res.status(400).json({ errMessage: "게시글 조회에 실패하였습니다." });
     } else {
