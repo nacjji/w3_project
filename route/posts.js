@@ -21,9 +21,11 @@ router.get("/:_postId", async (req, res) => {
       { _id: _postId },
       { title: true, user: true, content: true, postAt: true }
     );
-    if (post == null)
+    if (!post) {
       return res.status(400).json({ message: "게시물 조회에 실패하였습니다." });
-    else return res.status(200).json({ post: post });
+    } else {
+      return res.status(200).json({ post: post });
+    }
   } catch (message) {
     return res
       .status(400)
@@ -38,14 +40,14 @@ router.post("/", async (req, res) => {
   if (!content || !title || !password || !user || !password) {
     return res.status(400).json({ message: "게시글 내용을 입력해주세요" });
   }
-  const postC = await Posts.create({
+  const post = await Posts.create({
     title,
     user,
     content,
     password,
     postAt,
   });
-  return res.json({ Posts: postC });
+  return res.json({ Posts: post });
 });
 
 // 게시물 수정
@@ -53,26 +55,29 @@ router.put("/:_postId", async (req, res) => {
   try {
     const { _postId } = req.params;
     const { title, content, password } = req.body;
-    let post = await Posts.findOne({ _id: _postId });
+    const post = await Posts.findOne({ _id: _postId });
     //올바른 파라미터
-    if (post !== null) {
-      if (!content)
+    if (!post) {
+      if (!content) {
         return res.status(400).json({ errMessage: "글 내용을 입력해주세요" });
+      }
       if (password == post.password) {
         await Posts.updateOne(
           { _id: _postId },
           { $set: { title: title, content: content } }
         );
         return res.status(200).json({ message: "게시글을 수정하였습니다." });
-      } else
+      } else {
         return res
           .status(400)
           .json({ message: "비밀번호가 일치하지 않습니다." });
+      }
       // 올바르지 않은 파라미터
-    } else
+    } else {
       return res
         .status(400)
         .json({ errMessage: "게시글 조회에 실패하였습니다." });
+    }
   } catch (error) {
     return res.status(400).json({ error: "데이터 형식이 올바르지 않습니다." });
   }
@@ -83,18 +88,19 @@ router.delete("/:_postId", async (req, res) => {
     const { _postId } = req.params;
     const { password } = req.body;
     const post = await Posts.findOne({ _id: _postId });
-    if (post === null)
+    if (!null) {
       return res
         .status(400)
         .json({ errMessage: "게시글 조회에 실패하였습니다." });
-    else {
-      if (password == post.password) {
+    } else {
+      if (password === post.password) {
         await Posts.deleteOne({ _id: _postId });
         res.json({ result: "게시글을 삭제하였습니다." });
-      } else
+      } else {
         return res
           .status(400)
           .json({ message: "비밀번호가 일치하지 않습니다." });
+      }
     }
   } catch (error) {
     return res.status(400).json({ error: "데이터 형식이 올바르지 않습니다." });
