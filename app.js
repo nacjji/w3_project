@@ -6,6 +6,7 @@ const connect = require("./schemas");
 const indexRouter = require("./route/index");
 connect();
 
+// body-parser-middleware
 app.use(express.json());
 
 app.use("/", indexRouter);

@@ -3,10 +3,7 @@ const router = express.Router();
 const Posts = require("../schemas/post.js");
 // 전체 게시물 조회
 router.get("/", async (req, res) => {
-  let posts = await Posts.find(
-    {},
-    { title: true, user: true, content: true, postAt: true }
-  );
+  let posts = await Posts.find({}, { title: true, user: true, content: true, postAt: true });
 
   posts.reverse((a, b) => b.postAt - a.postAt);
   return res.status(200).json(posts);
@@ -17,19 +14,14 @@ router.get("/", async (req, res) => {
 router.get("/:_postId", async (req, res) => {
   try {
     const { _postId } = req.params;
-    let post = await Posts.findOne(
-      { _id: _postId },
-      { title: true, user: true, content: true, postAt: true }
-    );
+    let post = await Posts.findOne({ _id: _postId }, { title: true, user: true, content: true, postAt: true });
     if (!post) {
       return res.status(400).json({ message: "게시물 조회에 실패하였습니다." });
     } else {
       return res.status(200).json({ post: post });
     }
   } catch (message) {
-    return res
-      .status(400)
-      .json({ message: "데이터 형식이 올바르지 않습니다." });
+    return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
   }
 });
 
@@ -62,21 +54,14 @@ router.put("/:_postId", async (req, res) => {
         return res.status(400).json({ errMessage: "글 내용을 입력해주세요" });
       }
       if (password == post.password) {
-        await Posts.updateOne(
-          { _id: _postId },
-          { $set: { title: title, content: content } }
-        );
+        await Posts.updateOne({ _id: _postId }, { $set: { title: title, content: content } });
         return res.status(200).json({ message: "게시글을 수정하였습니다." });
       } else {
-        return res
-          .status(400)
-          .json({ message: "비밀번호가 일치하지 않습니다." });
+        return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
       }
       // 올바르지 않은 파라미터
     } else {
-      return res
-        .status(400)
-        .json({ errMessage: "게시글 조회에 실패하였습니다." });
+      return res.status(400).json({ errMessage: "게시글 조회에 실패하였습니다." });
     }
   } catch (error) {
     return res.status(400).json({ error: "데이터 형식이 올바르지 않습니다." });
@@ -89,17 +74,13 @@ router.delete("/:_postId", async (req, res) => {
     const { password } = req.body;
     const post = await Posts.findOne({ _id: _postId });
     if (!null) {
-      return res
-        .status(400)
-        .json({ errMessage: "게시글 조회에 실패하였습니다." });
+      return res.status(400).json({ errMessage: "게시글 조회에 실패하였습니다." });
     } else {
       if (password === post.password) {
         await Posts.deleteOne({ _id: _postId });
         res.json({ result: "게시글을 삭제하였습니다." });
       } else {
-        return res
-          .status(400)
-          .json({ message: "비밀번호가 일치하지 않습니다." });
+        return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
       }
     }
   } catch (error) {
