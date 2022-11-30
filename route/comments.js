@@ -4,7 +4,7 @@ const Comments = require("../schemas/comment.js");
 const Posts = require("../schemas/post.js");
 
 // 전체 댓글 조회
-router.get("/comments", async (req, res) => {
+router.get("/", async (req, res) => {
   let comments = await Comments.find(
     {},
     { user: true, content: true, postAt: true }
@@ -14,7 +14,7 @@ router.get("/comments", async (req, res) => {
 });
 
 // 특정 게시글에 달린 댓글 조회
-router.get("/comments/:_postId", async (req, res) => {
+router.get("/:_postId", async (req, res) => {
   const { _postId } = req.params;
   let comments = await Comments.find(
     { postId: _postId },
@@ -24,7 +24,7 @@ router.get("/comments/:_postId", async (req, res) => {
 });
 
 // 댓글 생성
-router.post("/comments/:_postId", async (req, res) => {
+router.post("/:_postId", async (req, res) => {
   try {
     const { _postId } = req.params;
     const { user, content, password, postAt } = req.body;
@@ -46,7 +46,7 @@ router.post("/comments/:_postId", async (req, res) => {
 });
 
 // 댓글 수정
-router.put("/comments/:_commentId", async (req, res) => {
+router.put("/:_commentId", async (req, res) => {
   try {
     const { _commentId } = req.params;
     const { content, password } = req.body;
@@ -73,7 +73,7 @@ router.put("/comments/:_commentId", async (req, res) => {
 });
 
 // 댓글 삭제
-router.delete("/comments/:_commentId", async (req, res) => {
+router.delete("/:_commentId", async (req, res) => {
   try {
     const { _commentId } = req.params;
     const comment = await Comments.findOne({ _id: _commentId });

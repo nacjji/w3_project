@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const Posts = require("../schemas/post.js");
 
 // 전체 게시물 조회
-router.get("/posts", async (req, res) => {
+router.get("/", async (req, res) => {
   let posts = await Posts.find(
     {},
     { title: true, user: true, content: true, postAt: true }
@@ -15,7 +14,7 @@ router.get("/posts", async (req, res) => {
 // title, user, password, content, postAt
 
 // 게시물 상세 조회
-router.get("/posts/:_postId", async (req, res) => {
+router.get("/:_postId", async (req, res) => {
   try {
     const { _postId } = req.params;
     let post = await Posts.findOne(
@@ -31,7 +30,7 @@ router.get("/posts/:_postId", async (req, res) => {
 });
 
 // 게시물 생성
-router.post("/posts", async (req, res) => {
+router.post("/", async (req, res) => {
   const { title, user, password, content, postAt } = req.body;
 
   if (!content || !title || !password || !user || !password) {
@@ -48,7 +47,7 @@ router.post("/posts", async (req, res) => {
 });
 
 // 게시물 수정
-router.put("/posts/:_postId", async (req, res) => {
+router.put("/:_postId", async (req, res) => {
   try {
     const { _postId } = req.params;
     const { title, content, password } = req.body;
@@ -72,7 +71,7 @@ router.put("/posts/:_postId", async (req, res) => {
   }
 });
 
-router.delete("/posts/:_postId", async (req, res) => {
+router.delete("/:_postId", async (req, res) => {
   try {
     const { _postId } = req.params;
     const { password } = req.body;
