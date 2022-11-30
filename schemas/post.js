@@ -32,7 +32,7 @@ const contentSchema = new mongoose.Schema({
     required: true,
   },
   password: {
-    type: "Number",
+    type: Number,
     required: true,
   },
   postAt: {
