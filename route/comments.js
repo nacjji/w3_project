@@ -5,7 +5,7 @@ const Posts = require("../schemas/post.js");
 
 // 전체 댓글 조회
 router.get("/", async (req, res) => {
-  let comments = await Comments.find({}, { user: true, content: true, postAt: true });
+  const comments = await Comments.find({}, { password: false, __v: false });
   comments.reverse((a, b) => b.postAt - a.postAt);
   return res.status(200).json(comments);
 });
@@ -13,7 +13,7 @@ router.get("/", async (req, res) => {
 // 특정 게시글에 달린 댓글 조회
 router.get("/:_postId", async (req, res) => {
   const { _postId } = req.params;
-  let comments = await Comments.find({ postId: _postId }, { user: true, content: true, postAt: true });
+  const comments = await Comments.find({ postId: _postId }, { password: false, __v: false });
   comments.reverse((a, b) => b.postAt - a.postAt);
   return res.status(200).json({ comments });
 });
@@ -25,6 +25,7 @@ router.post("/:_postId", async (req, res) => {
     const { user, content, password, postAt } = req.body;
     const comment = await Posts.findOne({ _id: _postId });
     if (!content) return res.status(400).json({ message: "댓글 내용을 입력해주세요" });
+    // _id 값을 가져올 때 mongoose의 ObjectId 객체 타입으로 가져오는데, toString 을 사용해 문자열 형식으로 변환한뒤 비교한다.
     if (_postId !== comment._id.toString()) {
       return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
     }
@@ -42,25 +43,25 @@ router.post("/:_postId", async (req, res) => {
 });
 
 // 댓글 수정
-router.put("/:_commentId", async (req, res) => {
+router.patch("/:_commentId", async (req, res) => {
   try {
     const { _commentId } = req.params;
     const { content, password } = req.body;
     let comment = await Comments.findOne({ _id: _commentId });
-    // 파라미터가 올바르지만
-    if (!comment) {
-      // 내용이 없을 때 에러 발생
-      if (!content) {
-        return res.status(400).json({ message: "댓글 내용을 입력해 주세요" });
+    // 파라미터가 올바르고
+    if (comment) {
+      // 비밀번호가 일치하면 데이터 수정
+      if (!content || !password) {
+        return res.status(400).json({ message: "필수 항목을 입력해 주세요" });
+      } else if (password === comment.password) {
+        await Comments.updateOne({ _id: _commentId }, { content: content });
+        return res.status(200).json({ message: "댓글을 수정하였습니다." });
       } else {
-        if (password === comment.password) {
-          await Comments.updateOne({ _id: _commentId }, { $set: { content: content } });
-        } else {
-          return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
-        }
+        return res.status(400).json({ message: "비밀번호가 일치하지 않습니다." });
       }
-      return res.status(200).json({ message: "댓글을 수정하였습니다." });
-    } else return res.status(400).json({ message: "댓글 조회에 실패하였습니다." });
+    } else {
+      return res.status(400).json({ message: "게시물 조회에 실패하였습니다." });
+    }
   } catch {
     return res.status(400).json({ message: "잘못된 데이터 형식입니다." });
   }

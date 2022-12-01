@@ -19,9 +19,12 @@ postAt =
   postAt.getMinutes() +
   "." +
   postAt.getSeconds();
+
+// 모델
 const contentSchema = new mongoose.Schema({
   title: {
     type: String,
+    required: true,
   },
   user: {
     type: String,
@@ -35,6 +38,7 @@ const contentSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  // 게시글이 작성되는 시간에 자동으로 생성되어야 하기 때문에 default 속성을 부여했다.
   postAt: {
     type: String,
     default: postAt,
