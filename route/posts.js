@@ -30,29 +30,28 @@ router.get("/:_postId", async (req, res) => {
 
 // 게시물 생성
 router.post("/", async (req, res) => {
-  const { title, user, password, content, postAt } = req.body;
-  // 게시글 속성 중 하나라도 입력이 되지 않으면 내용을 입력하라고 설정했다. 프론트엔드에서 항목에 (*) 표시를 해서 필수항목을 채우도록 유도할 수 있을것 같다.
-  if (!content || !title || !password || !user || !password) {
-    return res.status(400).json({ message: "게시글 내용을 입력해주세요" });
+  try {
+    const { title, user, password, content, postAt } = req.body;
+    const post = await Posts.create({
+      title,
+      user,
+      content,
+      password,
+      postAt,
+    });
+    return res.json({ Posts: post });
+  } catch (message) {
+    return res.status(500).json({ message: "알 수 없는 오류" });
   }
-  const post = await Posts.create({
-    title,
-    user,
-    content,
-    password,
-    postAt,
-  });
-  return res.json({ Posts: post });
 });
 
-// 게시물 수정 // 새로운 리소스를 추가할 필요가 없기 때문에 patch를 사용했다.
+// 게시물 수정 // 게시물 중 title 과 content 만 수정하기 위해 patch를 사용한다.
 router.patch("/:_postId", async (req, res) => {
   const { _postId } = req.params;
   const { title, content, password } = req.body;
   // _id 가 파라미터로 받은 _postId 와 같은 데이터를 찾는다.
   try {
     const post = await Posts.findOne({ _id: _postId });
-    console.log(post);
     // 올바른 파라미터
     if (post) {
       if (!content || !title || !password) {
@@ -67,7 +66,7 @@ router.patch("/:_postId", async (req, res) => {
       return res.status(400).json({ message: "게시물 조회에 실패하였습니다." });
     }
   } catch (message) {
-    return res.status(400).json({ message: "잘못된 데이터 형식입니다." });
+    return res.status(500).json({ message: "잘못된 데이터 형식입니다." });
   }
 });
 
@@ -87,7 +86,7 @@ router.delete("/:_postId", async (req, res) => {
       return res.status(400).json({ message: "게시물 조회에 실패하였습니다." });
     }
   } catch (error) {
-    return res.status(400).json({ error: "데이터 형식이 올바르지 않습니다." });
+    return res.status(500).json({ error: "데이터 형식이 올바르지 않습니다." });
   }
 });
 

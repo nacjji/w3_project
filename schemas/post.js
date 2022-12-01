@@ -24,6 +24,7 @@ postAt =
 const contentSchema = new mongoose.Schema({
   title: {
     type: String,
+    // 크로스 체킹 db <--> 서버
     required: true,
   },
   user: {

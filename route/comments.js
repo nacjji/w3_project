@@ -27,7 +27,7 @@ router.post("/:_postId", async (req, res) => {
     if (!content) return res.status(400).json({ message: "댓글 내용을 입력해주세요" });
     // _id 값을 가져올 때 mongoose의 ObjectId 객체 타입으로 가져오는데, toString 을 사용해 문자열 형식으로 변환한뒤 비교한다.
     if (_postId !== comment._id.toString()) {
-      return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
+      throw message;
     }
     const commentCreate = await Comments.create({
       postId: _postId,
@@ -38,7 +38,7 @@ router.post("/:_postId", async (req, res) => {
     });
     return res.json({ Comments: commentCreate });
   } catch (message) {
-    return res.status(400).json({ message: "데이터 형식이 올바르지 않습니다." });
+    return res.status(500).json({ message: "데이터 형식이 올바르지 않습니다." });
   }
 });
 
@@ -63,7 +63,7 @@ router.patch("/:_commentId", async (req, res) => {
       return res.status(400).json({ message: "게시물 조회에 실패하였습니다." });
     }
   } catch {
-    return res.status(400).json({ message: "잘못된 데이터 형식입니다." });
+    return res.status(500).json({ message: "잘못된 데이터 형식입니다." });
   }
 });
 
