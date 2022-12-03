@@ -6,11 +6,11 @@ const Posts = require("./posts");
 const Comments = require("./comments");
 
 // 인증
-const User = require("./users");
+const Users = require("./users");
 const Auth = require("./auth");
 
 // 회원가입,로그인
-router.use("/api/users", User);
+router.use("/api/users", Users);
 router.use("/api/auth", Auth);
 
 router.use("/posts", Posts);

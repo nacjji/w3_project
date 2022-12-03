@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const Comments = require("../schemas/comment.js");
-const Posts = require("../schemas/post.js");
 
 // 전체 댓글 조회
 router.get("/", async (req, res) => {

@@ -1,15 +1,19 @@
 const express = require("express");
 const router = express.Router();
-const Posts = require("../schemas/post.js");
+const sequelize = require("sequelize");
+const { Posts, Users } = require("../models");
 
 // 전체 게시물 조회
 router.get("/", async (req, res) => {
-  // 게시글 조회를 할 때 불필요한 password 와  버전 키 __v 는 false 처리를 해서 보이지 않게 했다.
-  const posts = await Posts.find({}, { password: false, __v: false });
-
-  // 글이 작성된 시간을 기준으로 최신 순으로 정렬해야하기 때문에 sort가 아닌 reverse 를 사용했다.
-  posts.reverse((a, b) => b.postAt - a.postAt);
-  return res.status(200).json(posts);
+  // console.log(Posts.findAll({ include: Users }));
+  try {
+    const posts = await Posts.findAll();
+    console.log(posts);
+    return res.status(200).json(Posts);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ errorMessage: error.message });
+  }
 });
 
 // 게시물 상세 조회
@@ -31,17 +35,18 @@ router.get("/:_postId", async (req, res) => {
 // 게시물 생성
 router.post("/", async (req, res) => {
   try {
-    const { title, user, password, content, postAt } = req.body;
+    const { userId, title, content } = req.body;
+    console.log(userId, title, content);
     const post = await Posts.create({
+      userId,
       title,
-      user,
       content,
-      password,
-      postAt,
     });
-    return res.json({ Posts: post });
+
+    res.json({ result: post });
   } catch (message) {
-    return res.status(500).json({ message: "알 수 없는 오류" });
+    console.log(message);
+    res.status(500).json({ message: "알 수 없는 오류" });
   }
 });
 
@@ -50,6 +55,7 @@ router.patch("/:_postId", async (req, res) => {
   const { _postId } = req.params;
   const { title, content, password } = req.body;
   // _id 가 파라미터로 받은 _postId 와 같은 데이터를 찾는다.
+  console.log("여기에요", Posts);
   try {
     const post = await Posts.findOne({ _id: _postId });
     // 올바른 파라미터

@@ -1,13 +1,18 @@
 const express = require("express");
 const app = express();
 const port = 3000;
-
-// connect 에 schemas/index.js 파일을 불러와서 변수에 할당
-const connect = require("./schemas");
+const { sequelize } = require("./models");
 // indexRouter에 route/index 파일을 불러와서 변수에 할당
 const indexRouter = require("./route/index");
-// 몽구스 db와 연결
-connect();
+
+sequelize
+  .sync({ force: false })
+  .then(() => {
+    console.log("sequelize 연결 성공");
+  })
+  .catch((err) => {
+    console.log("sequelize 연결 실패", err);
+  });
 
 // body-parser-middleware
 // http 응답의 body 부분을 json 형식으로 불러오는 미들웨어

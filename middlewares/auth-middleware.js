@@ -1,7 +1,5 @@
-// middlewares/auth-middleware.js
-
 const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+const { Users } = require("../models");
 
 module.exports = (req, res, next) => {
   const { authorization } = req.headers;
@@ -14,7 +12,7 @@ module.exports = (req, res, next) => {
 
   try {
     const { userId } = jwt.verify(authToken, "secret-key");
-    User.findByPk(userId).then((user) => {
+    Users.findByPk(userId).then((user) => {
       res.locals.user = user;
       next();
     });
