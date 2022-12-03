@@ -13,11 +13,17 @@ connect();
 // http 응답의 body 부분을 json 형식으로 불러오는 미들웨어
 app.use(express.json());
 
+const router = express.Router();
+
+app.use("/api", express.urlencoded({ extended: false }), router);
+
+app.use(express.static("assets"));
+
 // request 로그를 보내주는 미들웨어
-app.use((req, res, next) => {
-  console.log(`Request URL: ${req.originalUrl} - ${new Date()}`);
-  next();
-});
+// app.use((req, res, next) => {
+//   console.log(`Request URL: ${req.originalUrl} - ${new Date()}`);
+//   next();
+// });
 
 // "/" 로 들어오는 요청을 indexRouter 로 보냄
 app.use("/", indexRouter);
