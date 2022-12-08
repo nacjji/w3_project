@@ -6,7 +6,8 @@ module.exports = (req, res, next) => {
   const [authType, authToken] = (authorization || "").split(" ");
 
   if (!authToken || authType !== "Bearer") {
-    res.status(401).send({ errorMessage: "로그인 후 이용 가능한 기능입니다." });
+    console.log(authType);
+    res.status(401).send({ errorMessage: "11로그인 후 이용 가능한 기능입니다." });
     return;
   }
 
@@ -17,6 +18,6 @@ module.exports = (req, res, next) => {
       next();
     });
   } catch (err) {
-    res.status(401).send({ errorMessage: "로그인 후 이용 가능한 기능입니다." });
+    res.status(401).send({ errorMessage: "22로그인 후 이용 가능한 기능입니다." });
   }
 };

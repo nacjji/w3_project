@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
   try {
     const posts = await Posts.findAll();
     console.log(posts);
-    return res.status(200).json(Posts);
+    return res.status(200).json(posts);
   } catch (error) {
     console.log(error);
     res.status(500).json({ errorMessage: error.message });
@@ -35,10 +35,9 @@ router.get("/:_postId", async (req, res) => {
 // 게시물 생성
 router.post("/", async (req, res) => {
   try {
-    const { userId, title, content } = req.body;
-    console.log(userId, title, content);
+    const { title, content } = req.body;
     const post = await Posts.create({
-      userId,
+      // userId,
       title,
       content,
     });

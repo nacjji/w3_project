@@ -13,7 +13,7 @@ const Auth = require("./auth");
 router.use("/api/users", Users);
 router.use("/api/auth", Auth);
 
-router.use("/posts", Posts);
-router.use("/comments", Comments);
+router.use("/api/posts", Posts);
+router.use("/api/comments", Comments);
 
 module.exports = router;

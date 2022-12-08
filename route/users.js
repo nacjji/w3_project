@@ -15,6 +15,7 @@ router.post("/", async (req, res) => {
   const existsUsers = await Users.findAll({
     where: { [Op.or]: [{ email }, { nickname }] },
   });
+
   if (existsUsers.length) {
     res.status(400).send({ errorMessage: "이메일 또는 닉네임이 이미 사용중입니다." });
     return;
@@ -26,7 +27,7 @@ router.post("/", async (req, res) => {
 
 // 회원 정보 조회
 router.get("/me", authMiddleware, (req, res) => {
-  res.json({ user: res.locals.user });
+  res.json({ users: res.locals.users });
 });
 
 module.exports = router;

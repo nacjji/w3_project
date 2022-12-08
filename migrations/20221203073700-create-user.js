@@ -7,18 +7,21 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: Sequelize.DataTypes.INTEGER,
+        unique: true,
       },
       email: {
-        type: Sequelize.STRING,
+        type: Sequelize.DataTypes.STRING,
+        unique: true,
         allowNull: false,
       },
       nickname: {
-        type: Sequelize.STRING,
+        type: Sequelize.DataTypes.STRING,
+        unique: true,
         allowNull: false,
       },
       password: {
-        type: Sequelize.STRING,
+        type: Sequelize.DataTypes.STRING,
         allowNull: false,
       },
       createdAt: {
